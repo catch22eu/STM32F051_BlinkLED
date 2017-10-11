@@ -24,26 +24,26 @@ DEVICE      = cortex-m0
 PORT        = /dev/ttyUSB0
 FILENAME    = main
 GCC         = arm-none-eabi-gcc
-LD			= arm-none-eabi-ld
-OBJCP		= arm-none-eabi-objcopy
-AS			= arm-none-eabi-gcc -x assembler-with-cpp
-#OPT			= -Wall -Os -std=c99 -nostartfiles -mcpu=$(DEVICE) -mthumb -Wl,-Map,output.map
-OPT			= -Wall -Os -std=c99 -specs=nosys.specs -mcpu=$(DEVICE) -mthumb -Wl,-Map,output.map
-STM32LIBS	= ../STM32Cube_FW_F0/Drivers
+LD	    = arm-none-eabi-ld
+OBJCP	    = arm-none-eabi-objcopy
+AS	    = arm-none-eabi-gcc -x assembler-with-cpp
+#OPT	     = -Wall -Os -std=c99 -nostartfiles -mcpu=$(DEVICE) -mthumb -Wl,-Map,output.map
+OPT	    = -Wall -Os -std=c99 -specs=nosys.specs -mcpu=$(DEVICE) -mthumb -Wl,-Map,output.map
+STM32LIBS   = ../STM32Cube_FW_F0/Drivers
 
-INC			= -I$(STM32LIBS)/STM32F0xx_HAL_Driver/Inc/
-INC		   += -I$(STM32LIBS)/CMSIS/Device/ST/STM32F0xx/Include/
-INC		   += -I$(STM32LIBS)/CMSIS/Include/
+INC	    = -I$(STM32LIBS)/STM32F0xx_HAL_Driver/Inc/
+INC	   += -I$(STM32LIBS)/CMSIS/Device/ST/STM32F0xx/Include/
+INC	   += -I$(STM32LIBS)/CMSIS/Include/
 INC        += -I.
 
-DEF			= -DCORE_M0 -DSTM32F051x8
+DEF	    = -DCORE_M0 -DSTM32F051x8
 
-SRC			= $(STM32LIBS)/CMSIS/Device/ST/STM32F0xx/Source/Templates/system_stm32f0xx.c
-SRC			+= $(STM32LIBS)/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_gpio.c
-SRC			+= $(STM32LIBS)/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c.c
-SRC			+= $(STM32LIBS)/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc.c
-SRC			+= $(STM32LIBS)/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal.c
-SRC			+= $(STM32LIBS)/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_cortex.c
+SRC		= $(STM32LIBS)/CMSIS/Device/ST/STM32F0xx/Source/Templates/system_stm32f0xx.c
+SRC		+= $(STM32LIBS)/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_gpio.c
+SRC		+= $(STM32LIBS)/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c.c
+SRC		+= $(STM32LIBS)/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc.c
+SRC		+= $(STM32LIBS)/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal.c
+SRC		+= $(STM32LIBS)/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_cortex.c
 SRC  		+= $(FILENAME).c
 
 #copy all $(SRC) files into $(OBJS) and rename them to .o 
@@ -62,7 +62,7 @@ $(ASOBJ): $(ASSRC)
 
 %.o: %.c $(ASSRC)
 	$(GCC) -c $(OPT) $(INC) $(DEF) $< -o $@
-	
+
 %.elf: $(OBJS)
 	$(GCC) $(OPT) $(LIBS) -T$(LINKER_SCRIPT) $(OBJS) $(ASOBJ) -o $@
 
@@ -70,8 +70,7 @@ $(ASOBJ): $(ASSRC)
 	$(OBJCP) -O binary -S $< $@
 
 upload:
-#	stm32flash -w $(FILENAME).bin -i -dtr,-rts:dtr,rts,dtr,-rts /dev/ttyUSB0
-	stm32flash -w $(FILENAME).bin -g 0x0 -i -dtr,rts,-rts:dtr /dev/ttyUSB0
+	openocd -f openocd.cfg -c "init" -c "targets" -c "program_device ()"
 
 clean:
 	rm -f $(OBJS) $(ASOBJ)

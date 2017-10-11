@@ -38,12 +38,12 @@ int main(void)
 	gpio_init();
 
 	// I2C1 handle SCL/SDA = on pin PB6/PB7
-	I2C_HandleTypeDef I2C1;
+/*	I2C_HandleTypeDef I2C1;
 	HAL_I2C_MspInit();
-
+*/
     while (1)
     {
-		HAL_GPIO_TogglePin(GPIOB,GPIO_PIN_12);
+		HAL_GPIO_TogglePin(GPIOB,GPIO_PIN_1);
         delay(500000);
 	}
     return 0;
@@ -64,8 +64,8 @@ void delay (int a)
 void gpio_init()
 {
 	GPIO_InitTypeDef GPIO_InitStruct;
-	
-	GPIO_InitStruct.Pin = GPIO_PIN_12;
+
+	GPIO_InitStruct.Pin = GPIO_PIN_1;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
